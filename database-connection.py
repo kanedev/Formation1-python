@@ -29,6 +29,8 @@ values =[
 cursor.executemany(query,values)
 
 """
+
+#IMPORTANT TO SAVE DATA IN THE DB
 #db.commit() 
 
 #on récupère de la base de données les contacts 
