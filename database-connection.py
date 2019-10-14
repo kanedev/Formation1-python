@@ -6,8 +6,9 @@ db= mysql.connector.connect(
     database="pythondb"
 )
 print(db)
-
 cursor= db.cursor()
+
+
 
 #cursor.execute('CREATE DATABASE pythondb')
 #cursor.execute('CREATE TABLE contacts( id INT AUTO_INCREMENT PRIMARY KEY,name VARCHAR(255),tel VARCHAR(25))')

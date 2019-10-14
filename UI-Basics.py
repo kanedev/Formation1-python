@@ -26,7 +26,7 @@ nom = Entry(root, textvariable= nomVar)
 nom.grid(row=1,column=2)
 
 # Champ : Prénom
-labelPrenom = Label(root, text="Votre prenom :")
+labelPrenom = Label(root, text="Votre prénom :")
 labelPrenom.grid(row=2, column=1)
 
 prenomVar = StringVar()
