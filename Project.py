@@ -21,13 +21,18 @@ def say_hello():
   #  buffer = field.get()
   #  lbl2.config(text=buffer)
     print(nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
-    resutat.insert(END,nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
+    resultat.insert(END,nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
 
 
 
 def addContact():
       print(nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
       resultat.insert(END,nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
+      query="INSERT INTO contacts(nom,prenom,telephone) VALUES(%s,%s,%s)"
+      #values=('toto','tata','101010101010')
+      values=(nomVar.get(),prenomVar.get(),telephoneVar.get())  # add one line
+      cursor.execute(query,values)
+      db.commit() 
  
 def showAllContacts():
       print(nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
