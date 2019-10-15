@@ -22,7 +22,7 @@ def addContact():
       print(nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
       # resultat.insert(END,nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get()+ "\n")
 
-      resultat.insert(INSERT,nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
+      resultat.insert(END,nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
 
       query="INSERT INTO contacts(nom,prenom,telephone) VALUES(%s,%s,%s)"
       #values=('toto','tata','101010101010')
@@ -39,33 +39,59 @@ def showAllContacts():
   
      #Pour afficher tous les contacts
      for contact in contacts : 
-        resultat.insert(INSERT,contact)
-        resultat.insert(INSERT,"\n")
+        resultat.insert(END,contact)
+      #  resultat.insert(INSERT,"\n")
 
 def findContact():
       query =" SELECT * FROM contacts WHERE (nom LIKE %s OR prenom LIKE %s OR telephone LIKE %s )"
-      # VALUES(%s,%s,%s)
-      #cursor.execute(query,values)
-      # \' nomVar.get() \' OR prenom LIKE \' prenomVar.get() \' OR telephone LIKE \' telephoneVar.get() \'
       values=(rechercheVar.get(),rechercheVar.get(),rechercheVar.get()) 
       cursor.execute(query,values)
       contacts = cursor.fetchall()
-      print(contacts)
+      #print(contacts)
       #Pour afficher tous les contacts
+      nomVar.set("")
+      prenomVar.set("")  
+      telephoneVar.set("") 
+     
       for contact in contacts : 
-          resultat.insert(INSERT,contact)
-          resultat.insert(INSERT,"\n")
-
+          resultat.insert(END,contact)
+        #  resultat.insert(INSERT,"\n")
 
 
 def updateContact():
-      print(nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())      
+#  print(nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get()) 
+      query ="UPDATE contacts SET  nom=%s ,prenom=%s,telephone=%s  WHERE id = %s )"
+      values=(rechercheVar.get(),rechercheVar.get(),rechercheVar.get(),contactSelected) 
+      cursor.execute(query,values)
+      db.commit()      
 
 def deleteContact():
-      print(nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
+    #  print(nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
+    # resultat.delete(ANCHOR)
+    #query =" DELETE FROM contacts WHERE id = \' contactSelected \' "
+     
+     query =" DELETE FROM contacts WHERE id = %s "
+     values=(contactSelected[0],)
+     print(values)
+     cursor.execute(query,values)
+     db.commit() 
+     resultat.delete(ANCHOR)
+
+  #  print(getSelectedContact()) 
+     print('contact DELETED')
 
 def quitApp():
-      print(nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
+      exit()
+
+def getSelectedContact(event): 
+      global contactSelected
+      index= resultat.curselection()
+      contactSelected= resultat.get(index) 
+      nomVar.set(contactSelected[1])
+      prenomVar.set(contactSelected[2])  
+      telephoneVar.set(contactSelected[3]) 
+
+
 
 # Champ : Nom
 labelNom = Label(root, text="Nom :")
@@ -109,6 +135,7 @@ labelResultat.grid(row=6, column=1)
 
 resultat = Listbox(root, height=10, width=40)
 resultat.grid(row=7,column=2)
+resultat.bind('<<ListboxSelect>>',getSelectedContact)
 
 
 
