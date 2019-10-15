@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import scrolledtext
  
 import mysql.connector
 db= mysql.connector.connect(
@@ -14,31 +15,48 @@ cursor= db.cursor()
 # create blank root
 root = Tk()
 root.title("my Contacts App")
-root.geometry('500x500')
-
-def say_hello():
-    print('hello tkinter')
-  #  buffer = field.get()
-  #  lbl2.config(text=buffer)
-    print(nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
-    resultat.insert(END,nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
-
+root.geometry('600x400')
 
 
 def addContact():
       print(nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
-      resultat.insert(END,nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
+      # resultat.insert(END,nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get()+ "\n")
+
+      resultat.insert(INSERT,nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
+
       query="INSERT INTO contacts(nom,prenom,telephone) VALUES(%s,%s,%s)"
       #values=('toto','tata','101010101010')
       values=(nomVar.get(),prenomVar.get(),telephoneVar.get())  # add one line
       cursor.execute(query,values)
+      id_contact = cursor.lastrowid
+      print(id_contact)
       db.commit() 
  
 def showAllContacts():
-      print(nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
+     query =" SELECT * FROM contacts"
+     cursor.execute(query)
+     contacts = cursor.fetchall()
+  
+     #Pour afficher tous les contacts
+     for contact in contacts : 
+        resultat.insert(INSERT,contact)
+        resultat.insert(INSERT,"\n")
 
 def findContact():
-      print(nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())
+      query =" SELECT * FROM contacts WHERE (nom LIKE %s OR prenom LIKE %s OR telephone LIKE %s )"
+      # VALUES(%s,%s,%s)
+      #cursor.execute(query,values)
+      # \' nomVar.get() \' OR prenom LIKE \' prenomVar.get() \' OR telephone LIKE \' telephoneVar.get() \'
+      values=(rechercheVar.get(),rechercheVar.get(),rechercheVar.get()) 
+      cursor.execute(query,values)
+      contacts = cursor.fetchall()
+      print(contacts)
+      #Pour afficher tous les contacts
+      for contact in contacts : 
+          resultat.insert(INSERT,contact)
+          resultat.insert(INSERT,"\n")
+
+
 
 def updateContact():
       print(nomVar.get() + " " + prenomVar.get()+ " " + telephoneVar.get())      
@@ -73,13 +91,27 @@ telephoneVar = StringVar()
 telephone = Entry(root,  textvariable= telephoneVar)
 telephone.grid(row=3,column=2)
 
+# Champ : Recherche
+labelRecherche = Label(root, text="Rechercher :")
+labelRecherche.grid(row=4, column=1)
+
+rechercheVar = StringVar()
+recherche = Entry(root,  textvariable= rechercheVar)
+recherche.grid(row=4,column=2)
 
 # Champ : resultat
 labelResultat = Label(root ,text="Résultat :")
 labelResultat.grid(row=6, column=1)
 
-resultat = Text(root, height=10, width=40)
+# resultat = Text(root, height=10, width=40)
+# resultat.grid(row=7,column=2)
+#resultat = scrolledtext.ScrolledText(root, height=10, width=40)
+
+resultat = Listbox(root, height=10, width=40)
 resultat.grid(row=7,column=2)
+
+
+
 
 buttonaddContact = Button(root,text='Ajouter', command=addContact)
 buttonaddContact.grid(row=2,column=3)
